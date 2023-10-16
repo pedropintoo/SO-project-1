@@ -71,3 +71,10 @@ if [ -n "$directory" ]; then
 fi
 
 echo "$total_bits"
+
+
+# find sop/praticas/aula1 -maxdepth 1 -type f -name "*.sh" -exec du -c {} +
+# find "sop" -type f -name "*.sh" -exec dirname {} \;
+
+
+
