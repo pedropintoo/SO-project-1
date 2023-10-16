@@ -44,6 +44,8 @@ shift $((OPTIND-1))
 if [[ $# -eq 1 ]]
 then
   directory=$1
+else
+  directory="."
 fi
 
 # Tests
