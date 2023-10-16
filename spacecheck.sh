@@ -64,7 +64,7 @@ declare -A array
 folders=$(find "$directory" -type f -name "*.sh" -exec dirname {} \;)
 
 for f in $folders; do
-  numero_bits=$(find "$f" -maxdepth 1 -type f -name "*.sh" -exec du -c {} + | awk '{col=$1} END {print col}')
+  numero_bits=$(find "$f" -maxdepth 1 -type f -name "*.sh" -exec du -c {} + | awk 'END {print $1}')
   echo "$f"
   array[$f]=$numero_bits
   echo $numero_bits
