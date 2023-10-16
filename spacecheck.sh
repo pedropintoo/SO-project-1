@@ -50,31 +50,25 @@ fi
 
 # Tests
 
-echo "d = ${d}"
-echo "s = ${s}"
-echo "l = ${l}"
-echo "r = ${r}"
-echo "a = ${a}"
-echo "n = ${n}"
-echo "directory = ${directory}"
+#echo "d = ${d}"
+#echo "s = ${s}"
+#echo "l = ${l}"
+#echo "r = ${r}"
+#echo "a = ${a}"
+#echo "n = ${n}"
+#echo "directory = ${directory}"
+#
 
 
+folders=$(find "$directory" -type f -name "$n" -exec dirname {} /;)
 
+echo "----------"
 
-if [ -n "$directory" ]; then
-  total_bits=0
+for f in "$folders"; do
+  find "$f" -maxdepth 1 -type f -name "$n" -exec du -c {} +
+  echo " "
+done
 
-  while IFS= read -r -d '' file; do
-    file_size=$(stat -c "%s" "$file") # file size in bytes
-    total_bits=$((total_bits + file_size))
-  done < <(find "$directory" -type f -name "*.sh" -print0)
-fi
-
-echo "$total_bits"
-
-
-# find sop/praticas/aula1 -maxdepth 1 -type f -name "*.sh" -exec du -c {} +
-# find "sop" -type f -name "*.sh" -exec dirname {} \;
 
 
 
