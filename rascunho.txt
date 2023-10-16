@@ -1,0 +1,31 @@
+#if [ -n "$directory" ]; then
+#  total_bits=0
+#
+#  while IFS= read -r -d '' file; do
+#    file_size=$(stat -c "%s" "$file") # file size in bytes
+#    total_bits=$((total_bits + file_size))
+#  done < <(find "$directory" -type f -name "*.sh" -print0)
+#fi
+
+#echo "$total_bits"
+
+#list_of_file_sizes=()
+
+#list_of_file_sizes[find "$directory" -type f -name "*.sh"]=
+
+
+if [ -n "$directory" ]; then
+  declare -A file_sizes
+
+  while IFS= read -r -d '' file; do
+    file_size=$(stat -c "%s" "$file")
+    file_name=$(basename "$file")
+    file_sizes["$file_name"]=$file_size
+  done < <(find "$directory" -type f -name "*.sh" -print0)
+
+  echo "Tamanhos dos arquivos .sh no diretório $directory:"
+  for file_name in "${!file_sizes[@]}"; do
+    file_size="${file_sizes[$file_name]}"
+    echo "Nome do arquivo: $file_name, Tamanho em bytes: $file_size"
+  done
+fi
