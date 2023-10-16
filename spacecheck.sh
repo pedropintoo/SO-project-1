@@ -70,5 +70,11 @@ for f in "$folders"; do
 done
 
 
+<<<<<<< HEAD
+=======
+# find sop/praticas/aula1 -maxdepth 1 -type f -name "*.sh" -exec du -c {} +
+# find "sop" -type f -name "*.sh" -exec dirname {} \;
+
+>>>>>>> 5502e0a (no one modifications)
 
 
