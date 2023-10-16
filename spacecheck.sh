@@ -59,3 +59,13 @@ echo "directory = ${directory}"
 
 
 
+if [ -n "$directory" ]; then
+  total_bits=0
+
+  while IFS= read -r -d '' file; do
+    file_size=$(stat -c "%s" "$file") # file size in bytes
+    total_bits=$((total_bits + file_size))
+  done < <(find "$directory" -type f -name "*.sh" -print0)
+fi
+
+echo "$total_bits"
