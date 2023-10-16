@@ -59,22 +59,20 @@ fi
 #echo "directory = ${directory}"
 #
 
+declare -A array
 
-folders=$(find "$directory" -type f -name "$n" -exec dirname {} /;)
+folders=$(find "$directory" -type f -name "*.sh" -exec dirname {} \;)
 
-echo "----------"
-
-for f in "$folders"; do
-  find "$f" -maxdepth 1 -type f -name "$n" -exec du -c {} +
-  echo " "
+for f in $folders; do
+  numero_bits=$(find "$f" -maxdepth 1 -type f -name "*.sh" -exec du -c {} + | awk '{col=$1} END {print col}')
+  echo "$f"
+  array[$f]=$numero_bits
+  echo $numero_bits
 done
 
 
-<<<<<<< HEAD
-=======
 # find sop/praticas/aula1 -maxdepth 1 -type f -name "*.sh" -exec du -c {} +
 # find "sop" -type f -name "*.sh" -exec dirname {} \;
 
->>>>>>> 5502e0a (no one modifications)
 
 
