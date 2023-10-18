@@ -2,6 +2,8 @@
 # Error message: stdout -> stderr
 usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <regex>] [<directory>]" 1>&2; exit 1; }
 
+sort="-k1,1nr" # default sort
+
 # getopts to parse command-line options
 while getopts "d:s:l:ran::" opt; do
   case "$opt" in
@@ -20,12 +22,14 @@ while getopts "d:s:l:ran::" opt; do
     r)
       # option -r active
       [ -z "${a}" ] || usage
+      sort="-k1,1n"
       r=true
       ;;
     a)
       # option -a active
       [ -z "${r}" ] || usage
       a=true
+      sort="-k2,2"
       ;;
     n)
       # option -n active
@@ -43,6 +47,7 @@ shift $((OPTIND-1))
 
 if [[ $# -eq 1 ]]
 then
+  [ -d "$1" ] || usage  # check: valid directory
   directory=$1
 else
   directory="."
@@ -61,18 +66,15 @@ fi
 
 declare -A array
 
-folders=$(find "$directory" -type f -name "*.sh" -exec dirname {} \;)
+folders=$(find "$directory" -type d -exec sh -c 'test -n "$(find "$0" -maxdepth 1 -type f -name "'"$n"'" )"' {} \; -print)
+
+# Eventualmente, verificar se folders não está vazia !!!
+# Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
 
 for f in $folders; do
-  numero_bits=$(find "$f" -maxdepth 1 -type f -name "*.sh" -exec du -c {} + | awk 'END {print $1}')
-  echo "$f"
-  array[$f]=$numero_bits
-  echo $numero_bits
-done
-
-
-# find sop/praticas/aula1 -maxdepth 1 -type f -name "*.sh" -exec du -c {} +
-# find "sop" -type f -name "*.sh" -exec dirname {} \;
+  numero_bits=$(find "$f" -maxdepth 1 -type f -name "$n" -exec du -c {} + | awk 'END {print $1}')
+  echo $numero_bits $f
+done | sort $sort
 
 
 
