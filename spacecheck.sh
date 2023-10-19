@@ -69,12 +69,18 @@ declare -A array
 # Eventualmente, verificar se folders não está vazia !!!
 # Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
 
-folders=$(find "$directory" -type d -exec sh -c 'test -n "$(find "$0" -maxdepth 1 -type f -name "'"$n"'" )"' {} \; -print)
+  folders=$(find "$directory" -type d -exec sh -c 'test -n "$(find "$0" -maxdepth 1 -type f -name "'"$n"'" -size +15c )"' {} \; -print)
+
+if [ -z "$l" ]; then
+  l=$(echo "$folders" | wc -l)
+fi
+
 
 for f in $folders; do
-  numero_bits=$(find "$f" -maxdepth 1 -type f -name "$n" -exec du -c {} + | awk 'END {print $1}')
+  numero_bits=$(find "$f" -maxdepth 1 -type f -name "$n" -exec du -b {} + | awk '$1 > 15 {sum+=$1} END {print sum}')
+  #numero_bits=$(find "$f" -maxdepth 1 -type f -name "$n" -exec du -bc {} + | awk 'END {print $1}')
   echo $numero_bits $f
-done | sort $sort
+done | sort $sort | head -n "$l"
 
 
 
