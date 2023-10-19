@@ -64,8 +64,6 @@ fi
 #echo "directory = ${directory}"
 #
 
-declare -A array
-
 # Eventualmente, verificar se folders não está vazia !!!
 # Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
 
