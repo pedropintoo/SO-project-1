@@ -34,7 +34,7 @@ while getopts "d:s:l:ran::" opt; do
       ;;
     n)
       # option -n active
-      n=${OPTARG}
+      n="*$OPTARG"
       ;;
     *)
       usage
@@ -65,6 +65,10 @@ else
   [[ $s -eq "0" ]] || s=$((s-1))
 fi
 
+if [ -z "$n" ]; then
+  n="*"
+fi
+
 # LC_ALL=EN_us.utf8 for uniform date
 # Eventualmente, verificar se folders não está vazia !!!
 # Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
@@ -74,20 +78,20 @@ if [ -z "$d" ]; then
 fi
 
 folders=$(find "$directory" -type d -exec sh -c '
-test -n "$(find "$0" -maxdepth 1 -type f -name "'"$n"'" -size +"'"$s"'"c -newermt "'"$date_ref"'" )"
+test -n "$(find "$0" -maxdepth 1 -type f -name *"'"$n"'" -size +"'"$s"'"c -newermt "'"$date_ref"'" )"
 ' {} \; -print)
 
 if [ -z "$l" ]; then
   l=$(echo "$folders" | wc -l)
 fi
 
-
 for f in $folders; do
   numero_bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -name "$n" -exec du -b {} + | awk -v size="$s" '$1 >= size {sum+=$1} END {print sum}')
 
   echo $numero_bytes $f
 
-done | sort $sort | head -n "$l"
+done | sort $sort
+#| head -n "$l"
 
 
 
