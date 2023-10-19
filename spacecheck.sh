@@ -10,6 +10,7 @@ while getopts "d:s:l:ran::" opt; do
     d)
       # option -d active
       d=${OPTARG}
+      date_ref=$(LC_TIME=en_US.utf8 date -d "$d" "+%Y-%m-%d %H:%M:%S")
       ;;
     s)
       # option -s active
@@ -53,16 +54,6 @@ else
   directory="."
 fi
 
-# Tests
-
-#echo "d = ${d}"
-#echo "s = ${s}"
-#echo "l = ${l}"
-#echo "r = ${r}"
-#echo "a = ${a}"
-#echo "n = ${n}"
-#echo "directory = ${directory}"
-#
 
 # Eventualmente, verificar se folders não está vazia !!!
 # Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
@@ -74,8 +65,16 @@ else
   [[ $s -eq "0" ]] || s=$((s-1))
 fi
 
+# LC_ALL=EN_us.utf8 for uniform date
+# Eventualmente, verificar se folders não está vazia !!!
+# Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
+
+if [ -z "$d" ]; then
+    date_ref="0000-01-01 00:00:00"
+fi
+
 folders=$(find "$directory" -type d -exec sh -c '
-test -n "$(find "$0" -maxdepth 1 -type f -name "'"$n"'" -size +"'"$s"'"c )"
+test -n "$(find "$0" -maxdepth 1 -type f -name "'"$n"'" -size +"'"$s"'"c -newermt "'"$date_ref"'" )"
 ' {} \; -print)
 
 if [ -z "$l" ]; then
@@ -83,14 +82,12 @@ if [ -z "$l" ]; then
 fi
 
 
-for f in $folders; do 
-  numero_bytes=$(find "$f" -maxdepth 1 -type f -name "$n" -exec du -b {} + | awk -v size="$s" '$1 >= size {sum+=$1} END {print sum}')
-  #numero_bits=$(find "$f" -maxdepth 1 -type f -name "$n" -exec du -bc {} + | awk 'END {print $1}')
+for f in $folders; do
+  numero_bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -name "$n" -exec du -b {} + | awk -v size="$s" '$1 >= size {sum+=$1} END {print sum}')
 
   echo $numero_bytes $f
 
-done | sort $sort
-# | head -n "$l"
+done | sort $sort | head -n "$l"
 
 
 
