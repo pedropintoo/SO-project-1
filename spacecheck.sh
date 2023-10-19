@@ -54,31 +54,25 @@ else
   directory="."
 fi
 
-
+# LC_ALL=EN_us.utf8 for uniform date
 # Eventualmente, verificar se folders não está vazia !!!
 # Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
 
-
 if [ -z "$s" ]; then
   s=0
-else
-  [[ $s -eq "0" ]] || s=$((s-1))
 fi
 
 if [ -z "$n" ]; then
   n="*"
 fi
 
-# LC_ALL=EN_us.utf8 for uniform date
-# Eventualmente, verificar se folders não está vazia !!!
-# Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
-
 if [ -z "$d" ]; then
     date_ref="0000-01-01 00:00:00"
 fi
 
+# Logic of greater or equal: "\( -size '"$s"'c -o -size +'"$s"'c \)"
 folders=$(find "$directory" -type d -exec sh -c '
-test -n "$(find "$0" -maxdepth 1 -type f -name *"'"$n"'" -size +"'"$s"'"c -newermt "'"$date_ref"'" )"
+test -n "$(find "$0" -maxdepth 1 -type f -name *"'"$n"'" \( -size '"$s"'c -o -size +'"$s"'c \) -newermt "'"$date_ref"'" )"
 ' {} \; -print)
 
 if [ -z "$l" ]; then
@@ -86,12 +80,11 @@ if [ -z "$l" ]; then
 fi
 
 for f in $folders; do
+
   numero_bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -name "$n" -exec du -b {} + | awk -v size="$s" '$1 >= size {sum+=$1} END {print sum}')
+  echo "$numero_bytes" "$f"
 
-  echo $numero_bytes $f
-
-done | sort $sort
-#| head -n "$l"
+done | sort $sort | head -n "$l"
 
 
 
