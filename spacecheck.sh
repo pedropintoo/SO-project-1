@@ -66,10 +66,10 @@ fi
 
 declare -A array
 
-folders=$(find "$directory" -type d -exec sh -c 'test -n "$(find "$0" -maxdepth 1 -type f -name "'"$n"'" )"' {} \; -print)
-
 # Eventualmente, verificar se folders não está vazia !!!
 # Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
+
+folders=$(find "$directory" -type d -exec sh -c 'test -n "$(find "$0" -maxdepth 1 -type f -name "'"$n"'" )"' {} \; -print)
 
 for f in $folders; do
   numero_bits=$(find "$f" -maxdepth 1 -type f -name "$n" -exec du -c {} + | awk 'END {print $1}')
