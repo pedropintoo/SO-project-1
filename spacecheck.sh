@@ -2,39 +2,46 @@
 # Error message: stdout -> stderr
 usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <regex>] [<directory>]" 1>&2; exit 1; }
 
-sort="-k1,1nr" # default sort
+# --------------------------------------
+# Defaults
+# --------------------------------------
+directory="."
+sort_option="-k1,1nr" # default sort
+size=0
+name_exp="*"
+date_ref="0000-01-01 00:00:00"
+# --------------------------------------
+# --------------------------------------
+
 
 # getopts to parse command-line options
 while getopts "d:s:l:ran::" opt; do
   case "$opt" in
     d)
       # option -d active
-      d=${OPTARG}
-      date_ref=$(LC_TIME=en_US.utf8 date -d "$d" "+%Y-%m-%d %H:%M:%S")
+      date_ref=$(LC_TIME=en_US.utf8 date -d "$OPTARG" "+%Y-%m-%d %H:%M:%S")
       ;;
     s)
       # option -s active
-      s=${OPTARG}
+      size=${OPTARG}
       ;;
     l)
       # option -l active
-      l=${OPTARG}
+      limit_lines=${OPTARG}
       ;;
     r)
       # option -r active
       [ -z "${a}" ] || usage
-      sort="-k1,1n -k2,2r"
-      r=true
+      sort_option="-k1,1n -k2,2r"
       ;;
     a)
       # option -a active
       [ -z "${r}" ] || usage
-      a=true
-      sort="-k2,2"
+      sort_option="-k2,2"
       ;;
     n)
       # option -n active
-      n="*$OPTARG"
+      name_exp="*$OPTARG"
       ;;
     *)
       usage
@@ -46,45 +53,32 @@ done
 # allows your script to access and process the non-option arguments
 shift $((OPTIND-1))
 
-if [[ $# -eq 1 ]]
-then
-  [ -d "$1" ] || usage  # check: valid directory
-  directory=$1
-else
-  directory="."
-fi
-
 # LC_ALL=EN_us.utf8 for uniform date
 # Eventualmente, verificar se folders não está vazia !!!
 # Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
 
-if [ -z "$s" ]; then
-  s=0
+if [[ $# -eq 1 ]]
+then
+  [ -d "$1" ] || usage  # check: valid directory
+  directory=$1
 fi
 
-if [ -z "$n" ]; then
-  n="*"
-fi
-
-if [ -z "$d" ]; then
-    date_ref="0000-01-01 00:00:00"
-fi
 
 # Logic of greater or equal: "\( -size '"$s"'c -o -size +'"$s"'c \)"
 folders=$(find "$directory" -type d -exec sh -c '
-test -n "$(find "$0" -maxdepth 1 -type f -name *"'"$n"'" \( -size '"$s"'c -o -size +'"$s"'c \) -newermt "'"$date_ref"'" )"
+test -n "$(find "$0" -maxdepth 1 -type f -name *"'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"
 ' {} \; -print)
 
-if [ -z "$l" ]; then
-  l=$(echo "$folders" | wc -l)
+if [ -z "$limit_lines" ]; then
+  limit_lines=$(echo "$folders" | wc -l)
 fi
 
 for f in $folders; do
 
-  numero_bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -name "$n" -exec du -b {} + | awk -v size="$s" '$1 >= size {sum+=$1} END {print sum}')
-  echo "$numero_bytes" "$f"
+  bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -name "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
+  echo "$bytes" "$f"
 
-done | sort $sort | head -n "$l"
+done | sort $sort_option | head -n "$limit_lines"
 
 
 
