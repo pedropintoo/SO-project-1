@@ -8,6 +8,9 @@ usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <re
 # --------------------------------------
 # Defaults
 # --------------------------------------
+# header
+echo "SIZE NAME $(date "+%Y%m%d") $*"
+
 directory="."
 sort_option="-k1,1nr" # default sort
 size=0
