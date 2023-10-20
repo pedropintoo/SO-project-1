@@ -1,6 +1,9 @@
 #!/bin/bash
+source ./validation/spacecheck_validation.sh
+
 # Error message: stdout -> stderr
 usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <regex>] [<directory>]" 1>&2; exit 1; }
+
 
 # --------------------------------------
 # Defaults
@@ -8,7 +11,7 @@ usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <re
 directory="."
 sort_option="-k1,1nr" # default sort
 size=0
-name_exp="*"
+name_exp=".*"
 date_ref="0000-01-01 00:00:00"
 # --------------------------------------
 # --------------------------------------
@@ -23,11 +26,11 @@ while getopts "d:s:l:ran::" opt; do
       ;;
     s)
       # option -s active
-      size=${OPTARG}
+      size="$OPTARG"
       ;;
     l)
       # option -l active
-      limit_lines=${OPTARG}
+      limit_lines="$OPTARG"
       ;;
     r)
       # option -r active
@@ -41,7 +44,7 @@ while getopts "d:s:l:ran::" opt; do
       ;;
     n)
       # option -n active
-      name_exp="*$OPTARG"
+      name_exp="$OPTARG"
       ;;
     *)
       usage
@@ -63,10 +66,9 @@ then
   directory=$1
 fi
 
-
 # Logic of greater or equal: "\( -size '"$s"'c -o -size +'"$s"'c \)"
 folders=$(find "$directory" -type d -exec sh -c '
-test -n "$(find "$0" -maxdepth 1 -type f -name *"'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"
+test -n "$(find "$0" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"
 ' {} \; -print)
 
 if [ -z "$limit_lines" ]; then
@@ -75,10 +77,11 @@ fi
 
 for f in $folders; do
 
-  bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -name "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
+  bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -regex "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
   echo "$bytes" "$f"
 
-done | sort $sort_option | head -n "$limit_lines"
+done | sort $sort_option
+ #| head -n "$limit_lines"
 
 
 
