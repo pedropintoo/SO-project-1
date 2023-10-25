@@ -90,18 +90,18 @@ echo "SIZE NAME $(date "+%Y%m%d") $*"
 # Logic of greater or equal: "\( -size '"$s"'c -o -size +'"$s"'c \)"
 folders=$(find "$directory" -type d -exec sh -c '
 test -n "$(find "$0" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"
-' {} \; -print)
+' {} \; -print )
 
 if [ -z "$limit_lines" ]; then
   limit_lines=$(echo "$folders" | wc -l)
 fi
 
-for f in $folders; do
+while IFS= read -r f; do
 
   bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -regex "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
   echo "$bytes" "$f"
 
-done | sort $sort_option | head -n "$limit_lines"
+done <<< "$folders" | sort $sort_option | head -n "$limit_lines"
 
 
 
