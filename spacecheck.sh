@@ -22,10 +22,10 @@ while getopts "d:s:l:ran::" opt; do
   case "$opt" in
     d)
       # option -d active
-      if [[ -n "$OPTARG" ]]; then
-        date_ref=$(LC_TIME=en_US.utf8 date -d "$OPTARG" "+%Y-%m-%d %H:%M:%S")
-      else
+      if [[ "$OPTARG" == "" || -z "$OPTARG" ]]; then
         argError "-d"
+      else
+        date_ref=$(LC_TIME=en_US.utf8 date -d "$OPTARG" "+%Y-%m-%d %H:%M:%S")
       fi
       ;;
     s)
@@ -41,7 +41,6 @@ while getopts "d:s:l:ran::" opt; do
       if [[ "$OPTARG" =~ ^[0-9]+$ ]]; then
         limit_lines="$OPTARG"
       else
-        echo "ERRO! The limit lines is invalid!"
         usage
       fi
       ;;
