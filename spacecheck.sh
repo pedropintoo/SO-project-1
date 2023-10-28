@@ -3,7 +3,7 @@ source ./validation/spacecheck_validation.sh
 
 # Error message: stdout -> stderr
 usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <regex>] [<directory>]" 1>&2; exit 1; }
-
+argError() { echo "ERROR: $1 arg is invalid" 1>&2; exit 1; }
 
 # --------------------------------------
 # Defaults
@@ -24,12 +24,8 @@ while getopts "d:s:l:ran::" opt; do
       # option -d active
       if [[ -n "$OPTARG" ]]; then
         date_ref=$(LC_TIME=en_US.utf8 date -d "$OPTARG" "+%Y-%m-%d %H:%M:%S")
-      elif [[ "$OPTARG" == "\"" ]]; then
-        echo "ERRO! The date is invalid!"
-        usage
       else
-        echo "ERRO! The date is invalid!"
-        usage
+        argError "-d"
       fi
       ;;
     s)
@@ -37,8 +33,7 @@ while getopts "d:s:l:ran::" opt; do
       if [[ "$OPTARG" =~ ^[0-9]+$ ]]; then
         size="$OPTARG"
       else
-        echo "ERRO! The size is invalid!"
-        usage
+        argError "-s"
       fi
       ;;
     l)
@@ -84,24 +79,38 @@ then
   directory=$1
 fi
 
-# header
-echo "SIZE NAME $(date "+%Y%m%d") $*"
+
 
 # Logic of greater or equal: "\( -size '"$s"'c -o -size +'"$s"'c \)"
-folders=$(find "$directory" -type d -exec sh -c '
-test -n "$(find "$0" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"
-' {} \; -print )
+folders=$( find "$directory" -type d 2>/dev/null -exec sh -c '
+  for dir do
+    if [ -r "$dir" ]; then
+      if test -n "$(find "$dir" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"; then
+        echo "$dir"
+      fi
+    else
+      echo "$dir"
+    fi
+  done
+' sh {} +)
+
+[ -z "$folders" ] && usage
 
 if [ -z "$limit_lines" ]; then
   limit_lines=$(echo "$folders" | wc -l)
 fi
 
+# header
+echo "SIZE NAME $(date "+%Y%m%d") $*"
+
 while IFS= read -r f; do
 
-  bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -regex "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
-  echo "$bytes" "$f"
+  if [ -r "$f" ]; then
+    bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -regex "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
+    echo "$bytes" "$f"
+  else
+    echo "NA" "$f"
+  fi
+
 
 done <<< "$folders" | sort $sort_option | head -n "$limit_lines"
-
-
-
