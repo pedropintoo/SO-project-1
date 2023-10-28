@@ -14,7 +14,7 @@ directory="."
 sort_option="-k1,1nr" # default sort
 size=0
 name_exp=".*" 
-date_ref="0000-01-01 00:00:00"
+date_ref=$(LC_TIME=en_US.utf8 date "+%Y-%m-%d %H:%M:%S")
 # --------------------------------------
 # --------------------------------------
 
@@ -89,7 +89,7 @@ folders=$( find "$directory" -type d 2>/dev/null -exec sh -c '
   for dir do
     if [ ! -r "$dir" ]; then
       echo "$dir"
-    elif test -n "$(find "$dir" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"; then
+    elif test -n "$(find "$dir" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -not -newermt "'"$date_ref"'" )"; then
       echo "$dir"
     fi
   done
@@ -107,7 +107,7 @@ echo "SIZE NAME $(date "+%Y%m%d") $header"
 while IFS= read -r f; do
 
   if [ -r "$f" ]; then
-    bytes=$(find "$f" -maxdepth 1 -newermt "$date_ref" -type f -regex "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
+    bytes=$(find "$f" -maxdepth 1 -not -newermt "$date_ref" -type f -regex "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
     echo "$bytes" "$f"
   else
     echo "NA" "$f"
