@@ -87,11 +87,9 @@ fi
 # Logic of greater or equal: "\( -size '"$s"'c -o -size +'"$s"'c \)"
 folders=$( find "$directory" -type d 2>/dev/null -exec sh -c '
   for dir do
-    if [ -r "$dir" ]; then
-      if test -n "$(find "$dir" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"; then
-        echo "$dir"
-      fi
-    else
+    if [ ! -r "$dir" ]; then
+      echo "$dir"
+    elif test -n "$(find "$dir" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -newermt "'"$date_ref"'" )"; then
       echo "$dir"
     fi
   done
@@ -114,6 +112,5 @@ while IFS= read -r f; do
   else
     echo "NA" "$f"
   fi
-
 
 done <<< "$folders" | sort $sort_option | head -n "$limit_lines"
