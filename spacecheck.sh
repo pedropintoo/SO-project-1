@@ -84,12 +84,12 @@ fi
 
 
 
-# Logic of greater or equal: "\( -size '"$s"'c -o -size +'"$s"'c \)"
+# Logic of greater or equal: -not -size -'"$size"'c
 folders=$( find "$directory" -type d 2>/dev/null -exec sh -c '
   for dir do
     if [ ! -r "$dir" ]; then
       echo "$dir"
-    elif test -n "$(find "$dir" -maxdepth 1 -type f -regex "'"$name_exp"'" \( -size '"$size"'c -o -size +'"$size"'c \) -not -newermt "'"$date_ref"'" )"; then
+    elif test -n "$(find "$dir" -maxdepth 1 -type f -regex "'"$name_exp"'" -not -size -'"$size"'c -not -newermt "'"$date_ref"'" )"; then
       echo "$dir"
     fi
   done
