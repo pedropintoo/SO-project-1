@@ -85,7 +85,7 @@ fi
 
 
 # Logic of greater or equal: -not -size -'"$size"'c
-folders=$( find "$directory" -type d 2>/dev/null -exec sh -c '
+folders=$( find "$directory" -type d -exec sh -c '
   for dir do
     if [ ! -r "$dir" ]; then
       echo "$dir"
@@ -93,7 +93,7 @@ folders=$( find "$directory" -type d 2>/dev/null -exec sh -c '
       echo "$dir"
     fi
   done
-' sh {} +)
+' sh {} + 2>/dev/null)
 
 [ -z "$folders" ] && nothingFound
 
