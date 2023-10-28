@@ -50,12 +50,12 @@ while getopts "d:s:l:ran::" opt 2>/dev/null; do
       ;;
     r)
       # option -r active
-      [ -z "${a}" ] || usage
+      [[ "$sort_option" = "-k1,1nr" ]] || usage
       sort_option="-k1,1n -k1,1r -k2,2r"
       ;;
     a)
       # option -a active
-      [ -z "${r}" ] || usage
+      [[ "$sort_option" = "-k1,1nr" ]] || usage
       sort_option="-k2,2"
       ;;
     n)
