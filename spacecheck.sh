@@ -48,7 +48,7 @@ while getopts "d:s:l:ran::" opt; do
     r)
       # option -r active
       [ -z "${a}" ] || usage
-      sort_option="-k1,1n -k2,2r"
+      sort_option="-k1,1n -k1,1r -k2,2r"
       ;;
     a)
       # option -a active
