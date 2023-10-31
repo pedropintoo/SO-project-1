@@ -12,7 +12,7 @@ nothingFound() { echo "ERROR: nothing was found!" 1>&2; exit 1; }
 # --------------------------------------
 header="$*"
 
-directory="."
+directories="."
 sort_option="-k1,1nr" # default sort
 size=0
 name_exp=".*" 
@@ -81,11 +81,15 @@ shift $((OPTIND-1))
 if [[ $# -eq 1 ]]
 then
   [ -d "$1" ] || nothingFound  # check: valid directory
-  directory=$1
+  directories="$1"
 fi
+
+echo directory
 
 # all folders in directory
 folders=$(find "$directory" -type d 2>/dev/null | sort -u)
+
+echo "$folders"
 
 [ -z "$folders" ] && nothingFound
 
@@ -99,11 +103,11 @@ echo "SIZE NAME $(LC_TIME=en_US.utf8 date "+%Y%m%d") $header"
 while IFS= read -r f; do
 
   if [ -r "$f" ]; then
-    bytes=$(find "$f" -maxdepth 1 -not -newermt "$date_ref" -type f -regex "$name_exp" -exec du -b {} + | awk -v size="$size" '$1 >= size {sum+=$1} END {print sum}')
+    bytes=$(find "$f" -not -newermt "$date_ref" -type f -regex "$name_exp" -not -size -"$size"c  -exec du -bc {} + | tail -n 1 | awk '{print $1}')
+    [ -z "$bytes" ] && bytes=0
     echo "$bytes" "$f"
   else
     echo "NA" "$f"
   fi
 
-done <<< "$folders" | sort $sort_option
-#| head -n "$limit_lines"
+done <<< "$folders" | sort $sort_option | head -n "$limit_lines"
