@@ -84,18 +84,8 @@ then
   directory=$1
 fi
 
-
-
-# Logic of greater or equal: -not -size -'"$size"'c
-folders=$( find "$directory" -type d -exec sh -c '
-  for dir do
-    if [ ! -r "$dir" ]; then
-      echo "$dir"
-    elif test -n "$(find "$dir" -maxdepth 1 -type f -regex "'"$name_exp"'" -not -size -'"$size"'c -not -newermt "'"$date_ref"'" )"; then
-      echo "$dir"
-    fi
-  done
-' sh {} + 2>/dev/null)
+# all folders in directory
+folders=$(find "$directory" -type d 2>/dev/null | sort -u)
 
 [ -z "$folders" ] && nothingFound
 
@@ -115,4 +105,5 @@ while IFS= read -r f; do
     echo "NA" "$f"
   fi
 
-done <<< "$folders" | sort $sort_option | head -n "$limit_lines"
+done <<< "$folders" | sort $sort_option
+#| head -n "$limit_lines"
