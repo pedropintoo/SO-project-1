@@ -1,1 +1,0 @@
-unique_directories=$(echo "$directories" | tr ' ' '\n' | sort | uniq)
