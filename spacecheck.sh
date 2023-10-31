@@ -4,8 +4,9 @@
 
 # Error message: stdout -> stderr
 usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <regex>] [<directory>]" 1>&2; exit 1; }
-argError() { echo "ERROR: $1 arg is invalid!" 1>&2; exit 1; }
-nothingFound() { echo "ERROR: nothing was found!" 1>&2; exit 1; }
+argError() { echo "ALERT: \"$1\" arg is invalid." 1>&2; exit 1; }
+nothingFound() { echo "ERROR: nothing was found." 1>&2; exit 1; }
+invalidDirectory() { echo "ERROR: \"$1\" directory is invalid." 1>&2; exit 1; }
 
 # --------------------------------------
 # Defaults
@@ -78,18 +79,18 @@ shift $((OPTIND-1))
 # Eventualmente, verificar se folders não está vazia !!!
 # Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
 
-if [[ $# -eq 1 ]]
+if [[ $# -ge 1 ]]
 then
-  [ -d "$1" ] || nothingFound  # check: valid directory
-  directories="$1"
+  directories=""
+  for dir in "$@"; do
+    [ -d "$dir" ] || invalidDirectory "$dir" # check: valid directory
+    [ "$dir" = "/" ] || [ "$dir" = "//" ] || dir=$(echo "$dir" | sed 's:/*$::')
+    directories="${directories}$dir "
+  done
 fi
 
-echo directory
-
 # all folders in directory
-folders=$(find "$directory" -type d 2>/dev/null | sort -u)
-
-echo "$folders"
+folders=$(find $directories -type d 2>/dev/null | sort -u)
 
 [ -z "$folders" ] && nothingFound
 
@@ -102,12 +103,13 @@ echo "SIZE NAME $(LC_TIME=en_US.utf8 date "+%Y%m%d") $header"
 
 while IFS= read -r f; do
 
-  if [ -r "$f" ]; then
-    bytes=$(find "$f" -not -newermt "$date_ref" -type f -regex "$name_exp" -not -size -"$size"c  -exec du -bc {} + | tail -n 1 | awk '{print $1}')
+  if [ -x "$f" ]; then
+    bytes=$(find "$f" -not -newermt "$date_ref" -type f -regex "$name_exp" -not -size -"$size"c  -exec du -bc {} + 2>/dev/null | tail -n 1 | awk '{print $1}')
     [ -z "$bytes" ] && bytes=0
     echo "$bytes" "$f"
   else
     echo "NA" "$f"
   fi
 
-done <<< "$folders" | sort $sort_option | head -n "$limit_lines"
+done <<< "$folders" | sort "$sort_option" | head -n "$limit_lines"
+
