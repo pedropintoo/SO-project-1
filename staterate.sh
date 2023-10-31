@@ -6,6 +6,7 @@
 newestFile="$1"
 oldestFile="$2"
 header="SIZE NAME"
+sort_option="-k1,1nr"
 # -------------------------------
 # -------------------------------
 
@@ -26,16 +27,20 @@ do
             continue
         fi
 
-        # Aqui você pode adicionar a lógica para comparar as linhas
+        directoryNew=$(echo "$lineNew" | awk '{print $2}')
+        sizeNew=$(echo "$lineNew" | awk '{print $1}')
         
-        if [  ]; then
-            
-        fi 
+        directoryOld=$(echo "$lineOld" | awk '{print $2}')
+        sizeOld=$(echo "$lineOld" | awk '{print $1}')
+        
+
+        if [ "$directoryNew" == "$directoryOld" ]; then
+            echo $((sizeNew-sizeOld)) "$directoryNew" 
+        fi
 
     done < "$oldestFile"
 
-    # Após comparar todas as linhas do oldestFile com a linha atual do newestFile, você pode redefinir a variável firstLineOld
     firstLineOld=true
 
-done < "$newestFile"
+done < "$newestFile" | sort -k2,2
 
