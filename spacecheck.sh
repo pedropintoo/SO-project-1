@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# Visualization of occupied space by directories and specifications
 
 # Error message: stdout -> stderr
 usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <regex>] [<directory>]" 1>&2; exit 1; }
@@ -102,7 +104,7 @@ if [ -z "$limit_lines" ]; then
 fi
 
 # header
-echo "SIZE NAME $(date "+%Y%m%d") $header"
+echo "SIZE NAME $(LC_TIME=en_US.utf8 date "+%Y%m%d") $header"
 
 while IFS= read -r f; do
 
