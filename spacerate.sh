@@ -49,11 +49,6 @@ done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
  # echo "NEW: ${new_array["$path"]} $path"
 #done
 
-<<<<<<< HEAD
-for path in "${!old_array[@]}"; do
-  echo "OLD: ${old_array["$path"]} $path"
-done
-=======
 #for path in "${!old_array[@]}"; do
  # echo "OLD: ${old_array["$path"]} $path"
 #done
@@ -78,4 +73,3 @@ for path in "${!old_array[@]}"; do
 done 
 
 } | sort -k1,1nr
->>>>>>> 099fda1 (output function spacerate)
