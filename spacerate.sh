@@ -15,10 +15,24 @@ firstLineOld=true
 
 while IFS= read -r lineNew
 do
+
+    IFS="/"
+
     if [ "$firstLineNew" = true ]; then
         firstLineNew=false
         continue
     fi
+
+    directoryNew=$(echo "$lineNew" | awk '{print $2}')
+    sizeNew=$(echo "$lineNew" | awk '{print $1}')
+
+    read -ra partsNewDirectory <<< "$directoryNew"
+
+    IFS=" "
+
+    echo ${partsNewDirectory[@]}
+    echo ${#partsNewDirectory[@]}
+
 
     while IFS= read -r lineOld
     do
@@ -27,20 +41,18 @@ do
             continue
         fi
 
-        directoryNew=$(echo "$lineNew" | awk '{print $2}')
-        sizeNew=$(echo "$lineNew" | awk '{print $1}')
-        
         directoryOld=$(echo "$lineOld" | awk '{print $2}')
         sizeOld=$(echo "$lineOld" | awk '{print $1}')
         
+        IFS="/"
 
-        if [ "$directoryNew" == "$directoryOld" ]; then
-            echo $((sizeNew-sizeOld)) "$directoryNew" 
-        fi
+        read -ra partsOldDirectory <<< "$directoryOld"
+
+        IFS=" "
 
     done < "$oldestFile"
 
     firstLineOld=true
 
-done < "$newestFile" | sort -k2,2
+done < "$newestFile" #| sort -k2,2
 
