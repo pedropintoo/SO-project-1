@@ -58,7 +58,7 @@
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "PedroVersion",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/pedro/Documents/Universidade/2ano/1semestre/AED/Praticas",
+    "last_opened_file_path": "/home/pedro/Documents/Universidade/2ano/1semestre/SO/SO-project-1",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -68,6 +68,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -80,7 +85,7 @@
       <workItem from="1697460800229" duration="9000" />
       <workItem from="1697468065065" duration="3491000" />
       <workItem from="1697728744147" duration="120000" />
-      <workItem from="1698860928223" duration="3642000" />
+      <workItem from="1698860928223" duration="7388000" />
     </task>
     <servers />
   </component>
