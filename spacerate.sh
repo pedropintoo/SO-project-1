@@ -9,7 +9,7 @@ old_file="$2"
 # -------------------------------
 
 # header
-#echo "SIZE NAME"
+echo "SIZE NAME"
 
 # Save content of new file
 declare -A new_array
@@ -45,10 +45,37 @@ while read -r size path; do
 done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
 
 
-for path in "${!new_array[@]}"; do
-  echo "NEW: ${new_array["$path"]} $path"
-done
+#for path in "${!new_array[@]}"; do
+ # echo "NEW: ${new_array["$path"]} $path"
+#done
 
+<<<<<<< HEAD
 for path in "${!old_array[@]}"; do
   echo "OLD: ${old_array["$path"]} $path"
 done
+=======
+#for path in "${!old_array[@]}"; do
+ # echo "OLD: ${old_array["$path"]} $path"
+#done
+
+
+{
+
+for path in "${!new_array[@]}"; do 
+    if [ -v old_array["$path"] ]; then
+        echo $((new_array["$path"] - old_array["$path"])) $path
+    else
+        echo ${new_array["$path"]} $path "NEW" 
+    fi
+done 
+
+for path in "${!old_array[@]}"; do 
+    if [ -v new_array["$path"] ]; then
+        continue
+    else
+        echo $((-old_array["$path"])) $path "REMOVED" 
+    fi
+done 
+
+} | sort -k1,1nr
+>>>>>>> 099fda1 (output function spacerate)
