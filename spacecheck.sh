@@ -3,10 +3,34 @@
 # Visualization of occupied space by directories and specifications
 
 # Error message: stdout -> stderr
+
+#######################################
+# Command error message
+# Outputs:
+#   Output to STDERR
+#######################################
 usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r | -a] [-n <regex>] [<directory>]" 1>&2; exit 1; }
-argError() { echo "ALERT: \"$1\" arg is invalid." 1>&2; exit 1; }
-nothingFound() { echo "ERROR: nothing was found." 1>&2; exit 1; }
+
+#######################################
+# Argument error message
+# Outputs:
+#   Output to STDERR
+#######################################
+argError() { echo "ERROR: \"$1\" arg is invalid." 1>&2; exit 1; }
+
+#######################################
+# Invalid directory error
+# Outputs:
+#   Output to STDERR
+#######################################
 invalidDirectory() { echo "ERROR: \"$1\" directory is invalid." 1>&2; exit 1; }
+
+#######################################
+# Nothing was found alert
+# Outputs:
+#   Output to STDERR
+#######################################
+nothingFound() { echo "ALERT: nothing was found." 1>&2; exit 1; }
 
 # --------------------------------------
 # Defaults
@@ -25,49 +49,39 @@ date_ref=$(LC_TIME=en_US.utf8 date "+%Y-%m-%d %H:%M:%S")
 # getopts to parse command-line options
 while getopts "d:s:l:ran::" opt 2>/dev/null; do
   case "$opt" in
-    d)
-      # option -d active
-      # -d "    " - print the current date
+    d) # -d "    " - print the current date
+      [[ -z "$OPTARG" ]] && argError "-s"
       date_ref=$(LC_TIME=en_US.utf8 date -d "$OPTARG" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
-      [[ $? -ne 0 ]] || [[ -z "$OPTARG" ]] && argError "-d"
-      # se for 0 ou se for nulo dá o tempo
+      [[ $? -ne 0 ]] && argError "-d"
       ;;
     s)
-      # option -s active
-      [ -z "$OPTARG" ] && argError "-s"
-      if [[ "$OPTARG" -ge 0 ]]; then
-        size="$OPTARG"
-        [[ $size =~ ^[0-9]+$ ]] || argError "-s"
-      else
-        argError "-s"
-      fi
+      [[ -z "$OPTARG" ]] && argError "-s"
+      { [[ $OPTARG =~ ^[0-9]+$ ]] && [[ "$OPTARG" -ge 0 ]] ;} || argError "-l"
+      size="$OPTARG"
       ;;
     l)
-      # option -l active
-      [ -z "$OPTARG" ] && argError "-l"
-      if [[ "$OPTARG" -gt 0 ]]; then
-        limit_lines="$OPTARG"
-      else
-        argError "-l"
-      fi
+      [[ -z "$OPTARG" ]] && argError "-l"
+      { [[ "$OPTARG" =~ ^[0-9]+$ ]] && [[ "$OPTARG" -gt 0 ]] ;} || argError "-l"
+      limit_lines="$OPTARG"
       ;;
     r)
-      # option -r active
-      [[ "$sort_option" = "-k1,1nr" ]] || usage
-      sort_option="-k1,1n -k1,1r -k2,2r"
+      if [[ "$sort_option" = "-k1,1nr" ]]; then
+        sort_option="-k1,1n -k1,1r -k2,2r"
+      else
+        sort_option="-k2,2 -k1,1n -k1,1r" # -a -r
+      fi
       ;;
     a)
-      # option -a active
-      [[ "$sort_option" = "-k1,1nr" ]] || usage
-      sort_option="-k2,2"
+      if [[ "$sort_option" = "-k1,1nr" ]]; then
+        sort_option="-k2,2"
+      else
+        sort_option="-k1,1n -k1,1r -k2,2"  # -r -a
+      fi
       ;;
     n)
-      # option -n active
       name_exp="$OPTARG"
       ;;
-    *)
-      usage
-      ;;
+    *) usage ;;
   esac
 done
 
@@ -111,5 +125,5 @@ while IFS= read -r f; do
     echo "NA" "$f"
   fi
 
-done <<< "$folders" | sort "$sort_option" | head -n "$limit_lines"
+done <<< "$folders" | sort $sort_option | head -n "$limit_lines"
 
