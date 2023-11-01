@@ -30,7 +30,7 @@ invalidDirectory() { echo "ERROR: \"$1\" directory is invalid." 1>&2; exit 1; }
 # Defaults
 #######################################
 directories="."
-sort_option="-k1,1nr" # default sort
+sort_option="-k1,1nr"
 size=0
 name_exp=".*" 
 date_ref=$(LC_TIME=en_US.utf8 date "+%Y-%m-%d %H:%M:%S")
