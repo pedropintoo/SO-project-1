@@ -11,58 +11,51 @@ sort_option="-k1,1nr"
 # -------------------------------
 
 # header
-echo "SIZE NAME"
+#echo "SIZE NAME"
 
-firstLineNew=true
-firstLineOld=true
-
-while IFS= read -r lineNew
+tail -n +2 "$new_file" | while IFS= read -r new_line;
 do
+
+  IFS="/"
+
+
+  directoryNew=$(echo "$new_line" | awk '{print $2}')
+  sizeNew=$(echo "$new_line" | awk '{print $1}')
+
+  read -ra partsNewDirectory <<< "$directoryNew"
+  partsNewDirectory+=("$sizeNew")
+
+  IFS=" "
+
+  #echo ${partsNewDirectory[@]}
+  #echo ${#partsNewDirectory[@]}
+
+
+  tail -n +2 "$old_file" | while IFS= read -r old_line;
+  do
+    if [ "$firstLineOld" = true ]; then
+      firstLineOld=false
+      continue
+    fi
+
+    directoryOld=$(echo "$old_line" | awk '{print $2}')
+    sizeOld=$(echo "$old_line" | awk '{print $1}')
 
     IFS="/"
 
-    if [ "$firstLineNew" = true ]; then
-        firstLineNew=false
-        continue
-    fi
+    read -ra partsOldDirectory <<< "$directoryOld"
+    partsOldDirectory+=("$sizeOld")
 
-    directoryNew=$(echo "$lineNew" | awk '{print $2}')
-    sizeNew=$(echo "$lineNew" | awk '{print $1}')
+    for ((i=0; i<${#partsNewDirectory}; i++)); do
+      if [ ${#partsNewDirectory[i]} -ge ${#partsOldDirectory[i]} ]; then
+        echo $((partsNewDirectory[-1] - partsOldDirectory[-1]))
+      fi
+    done
 
-    read -ra partsNewDirectory <<< "$directoryNew"
-    partsNewDirectory+=("$sizeNew")
+  done
 
-    IFS=" "
+  firstLineOld=true
 
-    #echo ${partsNewDirectory[@]}
-    #echo ${#partsNewDirectory[@]}
-
-
-    while IFS= read -r lineOld
-    do
-        if [ "$firstLineOld" = true ]; then
-            firstLineOld=false
-            continue
-        fi
-
-        directoryOld=$(echo "$lineOld" | awk '{print $2}')
-        sizeOld=$(echo "$lineOld" | awk '{print $1}')
-        
-        IFS="/"
-
-        read -ra partsOldDirectory <<< "$directoryOld"
-        partsOldDirectory+=("$sizeOld")
-
-        for ((i=0; i<${#partsNewDirectory}; i++)); do
-            if [ ${#partsNewDirectory[i]} -ge ${#partsOldDirectory[i]} ]; then
-                echo $((partsNewDirectory[-1] - partsOldDirectory[-1]))
-            fi
-        done 
-
-    done < "$old_file"
-
-    firstLineOld=true
-
-done < "$new_file" #| sort -k2,2
+done #| sort -k2,2
 
 # o size está no ${partsNewDirectory[-1]}
