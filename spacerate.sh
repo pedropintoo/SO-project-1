@@ -13,49 +13,22 @@ sort_option="-k1,1nr"
 # header
 #echo "SIZE NAME"
 
-tail -n +2 "$new_file" | while IFS= read -r new_line;
-do
+declare -A new_array
+while read -r size path; do
+  new_array["$path"]=$size
+done <<< "$(awk '{ print $1, $2; }' "$new_file")"
 
-  IFS="/"
-
-
-  directoryNew=$(echo "$new_line" | awk '{print $2}')
-  sizeNew=$(echo "$new_line" | awk '{print $1}')
-
-  read -ra partsNewDirectory <<< "$directoryNew"
-  partsNewDirectory+=("$sizeNew")
-
-  IFS=" "
-
-  #echo ${partsNewDirectory[@]}
-  #echo ${#partsNewDirectory[@]}
+declare -A old_array
+while read -r size path; do
+  old_array["$path"]=$size
+done <<< "$(awk '{ print $1, $2; }' "$old_file")"
 
 
-  tail -n +2 "$old_file" | while IFS= read -r old_line;
-  do
-    if [ "$firstLineOld" = true ]; then
-      firstLineOld=false
-      continue
-    fi
 
-    directoryOld=$(echo "$old_line" | awk '{print $2}')
-    sizeOld=$(echo "$old_line" | awk '{print $1}')
-
-    IFS="/"
-
-    read -ra partsOldDirectory <<< "$directoryOld"
-    partsOldDirectory+=("$sizeOld")
-
-    for ((i=0; i<${#partsNewDirectory}; i++)); do
-      if [ ${#partsNewDirectory[i]} -ge ${#partsOldDirectory[i]} ]; then
-        echo $((partsNewDirectory[-1] - partsOldDirectory[-1]))
-      fi
-    done
-
-  done
-
-  firstLineOld=true
-
-done #| sort -k2,2
+#
+#while IFS= read -r new_line;
+#do
+#  echo "$new_line"
+#done < "$new_file"
 
 # o size está no ${partsNewDirectory[-1]}
