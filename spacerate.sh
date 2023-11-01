@@ -3,12 +3,15 @@
 # -------------------------------
 # declare variables
 # -------------------------------
-newestFile="$1"
-oldestFile="$2"
-header="SIZE NAME"
+new_file="$1"
+old_file="$2"
+
 sort_option="-k1,1nr"
 # -------------------------------
 # -------------------------------
+
+# header
+echo "SIZE NAME"
 
 firstLineNew=true
 firstLineOld=true
@@ -56,10 +59,10 @@ do
             fi
         done 
 
-    done < "$oldestFile"
+    done < "$old_file"
 
     firstLineOld=true
 
-done < "$newestFile" #| sort -k2,2
+done < "$new_file" #| sort -k2,2
 
 # o size está no ${partsNewDirectory[-1]}
