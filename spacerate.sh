@@ -27,11 +27,12 @@ do
     sizeNew=$(echo "$lineNew" | awk '{print $1}')
 
     read -ra partsNewDirectory <<< "$directoryNew"
+    partsNewDirectory+=("$sizeNew")
 
     IFS=" "
 
-    echo ${partsNewDirectory[@]}
-    echo ${#partsNewDirectory[@]}
+    #echo ${partsNewDirectory[@]}
+    #echo ${#partsNewDirectory[@]}
 
 
     while IFS= read -r lineOld
@@ -47,8 +48,13 @@ do
         IFS="/"
 
         read -ra partsOldDirectory <<< "$directoryOld"
+        partsOldDirectory+=("$sizeOld")
 
-        IFS=" "
+        for ((i=0; i<${#partsNewDirectory}; i++)); do
+            if [ ${#partsNewDirectory[i]} -ge ${#partsOldDirectory[i]} ]; then
+                echo $((partsNewDirectory[-1] - partsOldDirectory[-1]))
+            fi
+        done 
 
     done < "$oldestFile"
 
@@ -56,3 +62,4 @@ do
 
 done < "$newestFile" #| sort -k2,2
 
+# o size está no ${partsNewDirectory[-1]}
