@@ -25,13 +25,6 @@ argError() { echo "ERROR: \"$1\" arg is invalid." 1>&2; exit 1; }
 #######################################
 invalidDirectory() { echo "ERROR: \"$1\" directory is invalid." 1>&2; exit 1; }
 
-#######################################
-# Nothing was found alert
-# Outputs:
-#   Output to STDERR
-#######################################
-nothingFound() { echo "ALERT: nothing was found." 1>&2; exit 1; }
-
 # --------------------------------------
 # Defaults
 # --------------------------------------
@@ -50,7 +43,7 @@ date_ref=$(LC_TIME=en_US.utf8 date "+%Y-%m-%d %H:%M:%S")
 while getopts "d:s:l:ran::" opt 2>/dev/null; do
   case "$opt" in
     d) # -d "    " - print the current date
-      [[ -z "$OPTARG" ]] && argError "-s"
+      [[ -z "$OPTARG" ]] && argError "-d"
       date_ref=$(LC_TIME=en_US.utf8 date -d "$OPTARG" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
       [[ $? -ne 0 ]] && argError "-d"
       ;;
@@ -104,8 +97,6 @@ fi
 
 # all folders in directory
 folders=$(find "${directories[@]}" -type d | sort -u)
-
-[ -z "$folders" ] && nothingFound
 
 if [ -z "$limit_lines" ]; then
   limit_lines=$(echo "$folders" | wc -l)
