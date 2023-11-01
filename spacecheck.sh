@@ -2,7 +2,7 @@
 #
 # Visualization of occupied space by directories and specifications
 
-# Error message: stdout -> stderr
+
 
 #######################################
 # Command error message
@@ -25,18 +25,19 @@ argError() { echo "ERROR: \"$1\" arg is invalid." 1>&2; exit 1; }
 #######################################
 invalidDirectory() { echo "ERROR: \"$1\" directory is invalid." 1>&2; exit 1; }
 
-# --------------------------------------
-# Defaults
-# --------------------------------------
-header="$*"
 
+#######################################
+# Defaults
+#######################################
 directories="."
 sort_option="-k1,1nr" # default sort
 size=0
 name_exp=".*" 
 date_ref=$(LC_TIME=en_US.utf8 date "+%Y-%m-%d %H:%M:%S")
-# --------------------------------------
-# --------------------------------------
+
+header="$*"
+#######################################
+#######################################
 
 
 # getopts to parse command-line options
@@ -83,14 +84,13 @@ done
 shift $((OPTIND-1))
 
 # LC_ALL=EN_us.utf8 for uniform date
-# Resolver os erros em, por exemplo, ./spacecheck.sh -n "*.txt" /home/pedro/Documents/Universidade
 
 if [[ $# -ge 1 ]]
 then
   directories=()
   for dir in "$@"; do
-    [ -d "$dir" ] || invalidDirectory "$dir" # check: valid directory
-    [ "$dir" = "/" ] || [ "$dir" = "//" ] || dir=$(echo "$dir" | sed 's:/*$::')
+    [[ -d "$dir" ]] || invalidDirectory "$dir" # check: valid directory
+    [[ "$dir" = "/" ]] || [[ "$dir" = "//" ]] || dir=$(echo "$dir" | sed 's:/*$::')
     directories+=("$dir")
   done
 fi
@@ -98,7 +98,7 @@ fi
 # all folders in directory
 folders=$(find "${directories[@]}" -type d | sort -u)
 
-if [ -z "$limit_lines" ]; then
+if [[ -z "$limit_lines" ]]; then
   limit_lines=$(echo "$folders" | wc -l)
 fi
 
@@ -107,9 +107,9 @@ echo "SIZE NAME $(LC_TIME=en_US.utf8 date "+%Y%m%d") $header"
 
 while IFS= read -r f; do
 
-  if [ -x "$f" ]; then
+  if [[ -x "$f" ]]; then
     bytes=$(find "$f" -not -newermt "$date_ref" -type f \( -regex "$name_exp" -o -name "$name_exp" \) -not -size -"$size"c  -exec du -bc {} + 2>/dev/null | tail -n 1 | awk '{print $1}')
-    [ -z "$bytes" ] && bytes=0
+    [[ -z "$bytes" ]] && bytes=0
     echo "$bytes" "$f"
   else
     echo "NA" "$f"

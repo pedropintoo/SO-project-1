@@ -16,7 +16,6 @@ declare -A new_array
 while read -r size path; do
   new_array["$path"]=$size
   #echo "$path ${new_array["$path"]}"
-
 done <<< "$(tail -n +2 "$new_file" | awk '{ print $1, $2; }')"
 
 # Save content of old file
@@ -50,6 +49,6 @@ for path in "${!new_array[@]}"; do
   echo "NEW: ${new_array["$path"]} $path"
 done
 
-for path in "${!new_array[@]}"; do
-  echo "OLD: ${new_array["$path"]} $path"
+for path in "${!old_array[@]}"; do
+  echo "OLD: ${old_array["$path"]} $path"
 done
