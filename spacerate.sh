@@ -91,7 +91,9 @@ done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
 {
 
   for path in "${!new_array[@]}"; do
-      if [[ -v old_array["$path"] ]]; then
+      if [[ -v old_array["$path"] && ${new_array["$path"]} == "NA" ]]; then
+        echo ${new_array["$path"]} $path
+      elif [[ -v old_array["$path"] ]]; then
           echo $((new_array["$path"] - old_array["$path"])) $path
       else
           echo ${new_array["$path"]} $path "NEW"
@@ -102,7 +104,11 @@ done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
       if [[ -v new_array["$path"] ]]; then
           continue
       else
+        if [[ ${old_array["$path"]} == "NA" ]]; then
+          echo ${old_array["$path"]} $path
+        else
           echo $((-old_array["$path"])) $path "REMOVED"
+        fi
       fi
   done
 
