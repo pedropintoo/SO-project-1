@@ -96,7 +96,7 @@ then
 fi
 
 # all folders in directory
-folders=$(find "${directories[@]}" -type d | sort -u)
+folders=$(find "${directories[@]}" -type d 2>/dev/null | sort -u)
 
 if [[ -z "$limit_lines" ]]; then
   limit_lines=$(echo "$folders" | wc -l)
