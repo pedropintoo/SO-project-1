@@ -30,7 +30,7 @@ invalidDirectory() { echo "ERROR: \"$1\" directory is invalid." 1>&2; exit 1; }
 # Defaults
 #######################################
 directories="."
-sort_option="-k1,1nr"
+sort_option="-k1,1nr" # default sort
 size=0
 name_exp=".*" 
 date_ref=$(LC_TIME=en_US.utf8 date "+%Y-%m-%d %H:%M:%S")
@@ -96,7 +96,7 @@ then
 fi
 
 # all folders in directory
-folders=$(find "${directories[@]}" -type d 2>/dev/null | sort -u)
+folders=$(find "${directories[@]}" -type d | sort -u)
 
 if [[ -z "$limit_lines" ]]; then
   limit_lines=$(echo "$folders" | wc -l)
@@ -107,7 +107,7 @@ echo "SIZE NAME $(LC_TIME=en_US.utf8 date "+%Y%m%d") $header"
 
 while IFS= read -r f; do
 
-  if [[ -x "$f" ]] && [[ -r "$f" ]]; then
+  if [[ -x "$f" ]]; then
     bytes=$(find "$f" -not -newermt "$date_ref" -type f \( -regex "$name_exp" -o -name "$name_exp" \) -not -size -"$size"c  -exec du -bc {} + 2>/dev/null | tail -n 1 | awk '{print $1}')
     [[ -z "$bytes" ]] && bytes=0
     echo "$bytes" "$f"

@@ -7,6 +7,13 @@ sort_option="-k1,1nr"
 #######################################
 #######################################
 
+usage() { echo "Usage: $0 [-r] [-a] [file 1] [file 2]" 1>&2; exit 1; }
+
+if [ $# -lt 2 ]; then
+  usage
+  exit 1
+fi
+
 
 while getopts "ra" opt 2>/dev/null; do
   case "$opt" in
