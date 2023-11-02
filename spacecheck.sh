@@ -107,7 +107,7 @@ echo "SIZE NAME $(LC_TIME=en_US.utf8 date "+%Y%m%d") $header"
 
 while IFS= read -r f; do
 
-  if [[ -x "$f" ]]; then
+  if [[ -x "$f" ]] && [[ -r "$f" ]]; then
     bytes=$(find "$f" -not -newermt "$date_ref" -type f \( -regex "$name_exp" -o -name "$name_exp" \) -not -size -"$size"c  -exec du -bc {} + 2>/dev/null | tail -n 1 | awk '{print $1}')
     [[ -z "$bytes" ]] && bytes=0
     echo "$bytes" "$f"
