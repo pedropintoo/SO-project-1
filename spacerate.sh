@@ -1,18 +1,26 @@
 #!/bin/bash
 
 #######################################
+# Command error message
+# Outputs:
+#   Output to STDERR
+#######################################
+usage() { echo "Usage: $0 [-r] [-a] [file 1] [file 2]" 1>&2; exit 1; }
+
+#######################################
+# Invalid directory error
+# Outputs:
+#   Output to STDERR
+#######################################
+invalidFile() { echo "ERROR: \"$1\" file is invalid." 1>&2; exit 1; }
+
+
+#######################################
 # Defaults
 #######################################
 sort_option="-k1,1nr"
 #######################################
 #######################################
-
-usage() { echo "Usage: $0 [-r] [-a] [file 1] [file 2]" 1>&2; exit 1; }
-
-if [ $# -lt 2 ]; then
-  usage
-  exit 1
-fi
 
 
 while getopts "ra" opt 2>/dev/null; do
@@ -39,8 +47,15 @@ done
 # allows your script to access and process the non-option arguments
 shift $((OPTIND-1))
 
+
+[[ $# -eq 2 ]] || usage
+
 new_file="$1"
+[[ -r "$new_file" ]] || invalidFile "$new_file"
+
 old_file="$2"
+[[ -r "$old_file" ]] || invalidFile "$old_file"
+
 
 # header
 echo "SIZE NAME"
@@ -49,7 +64,6 @@ echo "SIZE NAME"
 declare -A new_array
 while read -r size path; do
   new_array["$path"]=$size
-  #echo "$path ${new_array["$path"]}"
 done <<< "$(tail -n +2 "$new_file" | awk '{ print $1, $2; }')"
 
 # Save content of old file
@@ -79,37 +93,27 @@ while read -r size path; do
 done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
 
 
-#for path in "${!new_array[@]}"; do
- # echo "NEW: ${new_array["$path"]} $path"
-#done
-
-#for path in "${!old_array[@]}"; do
- # echo "OLD: ${old_array["$path"]} $path"
-#done
-
-
+# Process the data
 {
 
+  # Check differences and NEW directories
   for path in "${!new_array[@]}"; do
-      if [[ -v old_array["$path"] && ${new_array["$path"]} == "NA" ]]; then
-        echo ${new_array["$path"]} $path
-      elif [[ -v old_array["$path"] ]]; then
-          echo $((new_array["$path"] - old_array["$path"])) $path
+    if [[ -v old_array["$path"] ]]; then
+      if [[ ${new_array["$path"]} == "NA" ]]; then
+        echo "NA" $path
       else
-          echo ${new_array["$path"]} $path "NEW"
+        echo $((new_array["$path"] - old_array["$path"])) $path
       fi
+    else
+      echo ${new_array["$path"]} $path "NEW"
+    fi
   done
 
+  # Check for REMOVED directories
   for path in "${!old_array[@]}"; do
-      if [[ -v new_array["$path"] ]]; then
-          continue
-      else
-        if [[ ${old_array["$path"]} == "NA" ]]; then
-          echo ${old_array["$path"]} $path
-        else
-          echo $((-old_array["$path"])) $path "REMOVED"
-        fi
-      fi
+    if [[ ! -v new_array["$path"] ]]; then
+      echo "-${old_array["$path"]}" $path "REMOVED"
+    fi
   done
 
 } | sort $sort_option

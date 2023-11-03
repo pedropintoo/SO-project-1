@@ -1,4 +1,0 @@
-git pull --rebase origin main
-## Resolves o problema
-git add <ficheiro>
-git rebase --continue
