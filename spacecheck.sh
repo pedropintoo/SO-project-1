@@ -84,8 +84,7 @@ done
 shift $((OPTIND-1))
 
 # LC_ALL=EN_us.utf8 for uniform date
-
-if [[ $# -ge 1 ]]
+if [[ "$#" -ge 1 ]]
 then
   directories=()
   for dir in "$@"; do
