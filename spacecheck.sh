@@ -50,7 +50,7 @@ while getopts "d:s:l:ran::" opt 2>/dev/null; do
       ;;
     s)
       [[ -z "$OPTARG" ]] && argError "-s"
-      { [[ $OPTARG =~ ^[0-9]+$ ]] && [[ "$OPTARG" -ge 0 ]] ;} || argError "-l"
+      { [[ $OPTARG =~ ^[0-9]+$ ]] && [[ "$OPTARG" -ge 0 ]] ;} || argError "-s"
       size="$OPTARG"
       ;;
     l)
