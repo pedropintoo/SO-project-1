@@ -39,7 +39,7 @@ header="$*"
 #######################################
 #######################################
 
-
+# Arguments
 # getopts to parse command-line options
 while getopts "d:s:l:ran::" opt 2>/dev/null; do
   case "$opt" in
@@ -104,6 +104,7 @@ fi
 # header
 echo "SIZE NAME $(LC_TIME=en_US.utf8 date "+%Y%m%d") $header"
 
+# Analise of folders
 while IFS= read -r f; do
 
   if [[ -x "$f" ]] && [[ -r "$f" ]]; then
