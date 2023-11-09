@@ -29,7 +29,7 @@ while getopts "ra" opt 2>/dev/null; do
       if [[ "$sort_option" = "-k1,1nr" ]]; then
         sort_option="-k1,1n -k1,1r -k2,2r"
       else
-        sort_option="-k2,2 -k1,1n -k1,1r" # -a -r
+        sort_option="-k2,2r" # -a -r
       fi
       ;;
     a)
