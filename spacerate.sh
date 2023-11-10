@@ -22,7 +22,8 @@ sort_option="-k1,1nr"
 #######################################
 #######################################
 
-
+# Arguments
+# getopts to parse command-line options
 while getopts "ra" opt 2>/dev/null; do
   case "$opt" in
     r)
