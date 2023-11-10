@@ -5,7 +5,7 @@
 # Outputs:
 #   Output to STDERR
 #######################################
-usage() { echo "Usage: $0 [-r] [-a] [file 1] [file 2]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-r] [-a] [new_file] [old_file]" 1>&2; exit 1; }
 
 #######################################
 # Invalid directory error

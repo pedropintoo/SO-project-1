@@ -9,11 +9,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68ff3bbd-9792-45eb-a345-48bd79735765" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/spacecheck_20220923" beforeDir="false" afterPath="$PROJECT_DIR$/data/spacecheck_20220923" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/spacecheck_20230923" beforeDir="false" afterPath="$PROJECT_DIR$/data/spacecheck_20230923" afterDir="false" />
-    </list>
+    <list default="true" id="68ff3bbd-9792-45eb-a345-48bd79735765" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,7 +96,7 @@
       <workItem from="1699474595995" duration="3493000" />
       <workItem from="1699529084223" duration="1115000" />
       <workItem from="1699632856093" duration="3929000" />
-      <workItem from="1699657565157" duration="718000" />
+      <workItem from="1699657565157" duration="1401000" />
     </task>
     <servers />
   </component>
