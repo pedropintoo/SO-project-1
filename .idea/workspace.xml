@@ -11,8 +11,8 @@
   <component name="ChangeListManager">
     <list default="true" id="68ff3bbd-9792-45eb-a345-48bd79735765" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sop/perm/perm_file.txt" beforeDir="false" afterPath="$PROJECT_DIR$/sop/perm/perm_file.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spacecheck.sh" beforeDir="false" afterPath="$PROJECT_DIR$/spacecheck.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/spacecheck_20220923" beforeDir="false" afterPath="$PROJECT_DIR$/data/spacecheck_20220923" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/spacecheck_20230923" beforeDir="false" afterPath="$PROJECT_DIR$/data/spacecheck_20230923" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +76,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/sop/teste2" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -95,7 +98,9 @@
       <workItem from="1699282181379" duration="393000" />
       <workItem from="1699352430558" duration="6071000" />
       <workItem from="1699474595995" duration="3493000" />
-      <workItem from="1699529084223" duration="723000" />
+      <workItem from="1699529084223" duration="1115000" />
+      <workItem from="1699632856093" duration="3929000" />
+      <workItem from="1699657565157" duration="718000" />
     </task>
     <servers />
   </component>

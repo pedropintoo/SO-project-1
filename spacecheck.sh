@@ -9,7 +9,7 @@
 # Outputs:
 #   Output to STDERR
 #######################################
-usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r] [-a] [-n <regex>] [<directory>]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-d <date>] [-s <size>] [-l <limit>] [-r] [-a] [-n <regex>] [<directories>]" 1>&2; exit 1; }
 
 #######################################
 # Argument error message
