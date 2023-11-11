@@ -65,13 +65,13 @@ old_file="$2"
 declare -A new_array
 while read -r size path; do
   new_array["$path"]=$size
-done <<< "$(tail -n +2 "$new_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path"\ "$i; print $1, path }')"
+done <<< "$(tail -n +2 "$new_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }')"
 
 # Save content of old file
 declare -A old_array
 while read -r size path; do
   old_array["$path"]=$size
-done <<< "$(tail -n +2 "$old_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path"\ "$i; print $1, path }')"
+done <<< "$(tail -n +2 "$old_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }')"
 
 # Convert new array to not cumulative sum
 while read -r size path; do
@@ -81,7 +81,7 @@ while read -r size path; do
     father_path="${father_path%/*}"
     new_array["$father_path"]=$((${new_array["$father_path"]} - ${new_array["$path"]}))
   done
-done <<< "$(tail -n +2 "$new_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path"\ "$i; print $1, path }' | sort -k2 -r )"
+done <<< "$(tail -n +2 "$new_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }' | sort -k2 -r )"
 
 # Convert old array to not cumulative sum
 while read -r size path; do
@@ -91,7 +91,7 @@ while read -r size path; do
     father_path="${father_path%/*}"
     old_array["$father_path"]=$((${old_array["$father_path"]} - ${old_array["$path"]}))
   done
-done <<< "$(tail -n +2 "$old_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path"\ "$i; print $1, path }' | sort -k2 -r )"
+done <<< "$(tail -n +2 "$old_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }' | sort -k2 -r )"
 
 
 
