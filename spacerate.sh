@@ -57,11 +57,11 @@ new_file="$1"
 old_file="$2"
 [[ -r "$old_file" ]] || invalidFile "$old_file"
 
+# header
+echo "SIZE NAME"
+
 content_new_file="$(tail -n +2 "$new_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }')"
 content_old_file="$(tail -n +2 "$old_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }')"
-
-# header
-#echo "SIZE NAME"
 
 # Save content of new file
 declare -A new_array
