@@ -11,8 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="68ff3bbd-9792-45eb-a345-48bd79735765" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/spacecheck_20220923" beforeDir="false" afterPath="$PROJECT_DIR$/data/spacecheck_20220923" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/spacecheck_20230923" beforeDir="false" afterPath="$PROJECT_DIR$/data/spacecheck_20230923" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacerate.sh" beforeDir="false" afterPath="$PROJECT_DIR$/spacerate.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -102,7 +100,7 @@
       <workItem from="1699529084223" duration="1115000" />
       <workItem from="1699632856093" duration="3929000" />
       <workItem from="1699657565157" duration="3345000" />
-      <workItem from="1699700947143" duration="2969000" />
+      <workItem from="1699700947143" duration="5287000" />
     </task>
     <servers />
   </component>
