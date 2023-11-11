@@ -28,16 +28,16 @@ while getopts "ra" opt 2>/dev/null; do
   case "$opt" in
     r)
       if [[ "$sort_option" = "-k1,1nr" ]]; then
-        sort_option="-k1,1n -k1,1r -k2,2r"
+        sort_option="-k1,1n -k1,1r -k2 -r"
       else
-        sort_option="-k2,2r" # -a -r
+        sort_option="-k2 -r" # -a -r
       fi
       ;;
     a)
       if [[ "$sort_option" = "-k1,1nr" ]]; then
-        sort_option="-k2,2"
+        sort_option="-k2"
       else
-        sort_option="-k1,1n -k1,1r -k2,2"  # -r -a
+        sort_option="-k1,1n -k1,1r -k2"  # -r -a
       fi
       ;;
     *) usage ;;
@@ -59,19 +59,19 @@ old_file="$2"
 
 
 # header
-echo "SIZE NAME"
+#echo "SIZE NAME"
 
 # Save content of new file
 declare -A new_array
 while read -r size path; do
   new_array["$path"]=$size
-done <<< "$(tail -n +2 "$new_file" | awk '{ print $1, $2; }')"
+done <<< "$(tail -n +2 "$new_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path"\ "$i; print $1, path }')"
 
 # Save content of old file
 declare -A old_array
 while read -r size path; do
   old_array["$path"]=$size
-done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }')"
+done <<< "$(tail -n +2 "$old_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path"\ "$i; print $1, path }')"
 
 # Convert new array to not cumulative sum
 while read -r size path; do
@@ -79,9 +79,9 @@ while read -r size path; do
   while true; do
     [[ "${father_path%/*}" = "${father_path##/*}" ]] && break
     father_path="${father_path%/*}"
-    new_array["$father_path"]=$(( new_array["$father_path"] - new_array["$path"] ))
+    new_array["$father_path"]=$((${new_array["$father_path"]} - ${new_array["$path"]}))
   done
-done <<< "$(tail -n +2 "$new_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
+done <<< "$(tail -n +2 "$new_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path"\ "$i; print $1, path }' | sort -k2 -r )"
 
 # Convert old array to not cumulative sum
 while read -r size path; do
@@ -89,9 +89,10 @@ while read -r size path; do
   while true; do
     [[ "${father_path%/*}" = "${father_path##/*}" ]] && break
     father_path="${father_path%/*}"
-    old_array["$father_path"]=$(( old_array["$father_path"] - old_array["$path"] ))
+    old_array["$father_path"]=$((${old_array["$father_path"]} - ${old_array["$path"]}))
   done
-done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
+done <<< "$(tail -n +2 "$old_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path"\ "$i; print $1, path }' | sort -k2 -r )"
+
 
 
 # Process the data
@@ -99,11 +100,12 @@ done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
 
   # Check differences and NEW directories
   for path in "${!new_array[@]}"; do
-    if [[ -v old_array["$path"] ]]; then
+
+    if [[ ${old_array["$path"]} ]]; then
       if [[ ${new_array["$path"]} == "NA" ]]; then
         echo "NA" $path
       else
-        echo $((new_array["$path"] - old_array["$path"])) $path
+        echo $((${new_array["$path"]} - ${old_array["$path"]})) $path
       fi
     else
       echo ${new_array["$path"]} $path "NEW"
@@ -112,7 +114,7 @@ done <<< "$(tail -n +2 "$old_file" | awk '{ print $1, $2; }' | sort "-k2,2r" )"
 
   # Check for REMOVED directories
   for path in "${!old_array[@]}"; do
-    if [[ ! -v new_array["$path"] ]]; then
+    if [[ ! "${new_array["$path"]}" ]]; then
       echo "-${old_array["$path"]}" $path "REMOVED"
     fi
   done

@@ -60,16 +60,16 @@ while getopts "d:s:l:ran::" opt 2>/dev/null; do
       ;;
     r)
       if [[ "$sort_option" = "-k1,1nr" ]]; then
-        sort_option="-k1,1n -k1,1r -k2,2r"
+        sort_option="-k1,1n -k1,1r -k2 -r"
       else
-        sort_option="-k2,2r" # -a -r
+        sort_option="-k2 -r" # -a -r
       fi
       ;;
     a)
       if [[ "$sort_option" = "-k1,1nr" ]]; then
-        sort_option="-k2,2"
+        sort_option="-k2"
       else
-        sort_option="-k1,1n -k1,1r -k2,2"  # -r -a
+        sort_option="-k1,1n -k1,1r -k2"  # -r -a
       fi
       ;;
     n)
