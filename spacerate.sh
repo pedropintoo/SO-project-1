@@ -49,7 +49,7 @@ done
 shift $((OPTIND-1))
 
 
-[[ $# -eq 2 ]] || usage
+[[ "$#" -eq 2 ]] || usage
 
 new_file="$1"
 [[ -r "$new_file" ]] || invalidFile "$new_file"
