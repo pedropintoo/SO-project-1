@@ -60,8 +60,10 @@ old_file="$2"
 # header
 echo "SIZE NAME"
 
-content_new_file="$(tail -n +2 "$new_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }')"
-content_old_file="$(tail -n +2 "$old_file" | awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }')"
+content_new_file="$(tail -n +2 "$new_file" |
+awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }')"
+content_old_file="$(tail -n +2 "$old_file" |
+awk '{ path=$2; for(i=3; i<=NF; i++) path=path" "$i; print $1, path }')"
 
 # Save content of new file
 declare -A new_array
@@ -117,7 +119,11 @@ done <<< "$(sort -k2 -r <<< "$content_old_file")"
   # Check for REMOVED directories
   for path in "${!old_array[@]}"; do
     if [[ ! "${new_array["$path"]}" ]]; then
-      echo "-${old_array["$path"]}" $path "REMOVED"
+      if [[ ${old_array["$path"]} == "NA" ]]; then
+        echo "NA" $path "REMOVED"
+      else
+        echo "-${old_array["$path"]}" $path "REMOVED"
+      fi
     fi
   done
 
