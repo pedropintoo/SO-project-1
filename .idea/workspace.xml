@@ -11,13 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="68ff3bbd-9792-45eb-a345-48bd79735765" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/spacecheck_20220923" beforeDir="false" afterPath="$PROJECT_DIR$/data/spacecheck_20220923" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/spacecheck_20230923" beforeDir="false" afterPath="$PROJECT_DIR$/data/spacecheck_20230923" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sop/praticas 2/aula 1/test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/sop/praticas2/aula1/test.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sop/praticas 2/aula 2/test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/sop/praticas2/aula2/test.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sop/praticas 2/aula 2/test2.sh" beforeDir="false" afterPath="$PROJECT_DIR$/sop/praticas2/aula2/test2.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sop/praticas 2/teste.sh" beforeDir="false" afterPath="$PROJECT_DIR$/sop/praticas2/teste.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sop/teoricas 1/test.sh" beforeDir="false" afterPath="$PROJECT_DIR$/sop/teoricas1/test.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spacerate.sh" beforeDir="false" afterPath="$PROJECT_DIR$/spacerate.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +101,11 @@
       <workItem from="1699632856093" duration="3929000" />
       <workItem from="1699657565157" duration="3345000" />
       <workItem from="1699700947143" duration="7774000" />
-      <workItem from="1699736744589" duration="8386000" />
+      <workItem from="1699736744589" duration="9167000" />
+      <workItem from="1699809287242" duration="1892000" />
+      <workItem from="1699820419019" duration="232000" />
+      <workItem from="1699890543956" duration="480000" />
+      <workItem from="1699891487460" duration="1300000" />
     </task>
     <servers />
   </component>

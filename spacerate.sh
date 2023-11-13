@@ -81,6 +81,7 @@ done <<< "$content_old_file"
 while read -r size path; do
   father_path="$path"
   while true; do
+    [[ ${new_array["${father_path##/*}"]} ]] && break
     [[ "${father_path%/*}" = "${father_path##/*}" ]] && break
     father_path="${father_path%/*}"
     new_array["$father_path"]=$((${new_array["$father_path"]} - ${new_array["$path"]}))
@@ -91,6 +92,7 @@ done <<< "$(sort -k2 -r <<< "$content_new_file")"
 while read -r size path; do
   father_path="$path"
   while true; do
+    [[ ${old_array["${father_path##/*}"]} ]] && break
     [[ "${father_path%/*}" = "${father_path##/*}" ]] && break
     father_path="${father_path%/*}"
     old_array["$father_path"]=$((${old_array["$father_path"]} - ${old_array["$path"]}))
@@ -98,13 +100,11 @@ while read -r size path; do
 done <<< "$(sort -k2 -r <<< "$content_old_file")"
 
 
-
 # Process the data
 {
 
   # Check differences and NEW directories
   for path in "${!new_array[@]}"; do
-
     if [[ ${old_array["$path"]} ]]; then
       if [[ ${new_array["$path"]} == "NA" ]]; then
         echo "NA" $path
