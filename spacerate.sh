@@ -81,7 +81,7 @@ done <<< "$content_old_file"
 while read -r size path; do
   father_path="$path"
   while true; do
-    [[ ${new_array["${father_path##/*}"]} ]] && break
+    #[[ ${new_array["${father_path##/*}"]} ]] && break
     [[ "${father_path%/*}" = "${father_path##/*}" ]] && break
     father_path="${father_path%/*}"
     new_array["$father_path"]=$((${new_array["$father_path"]} - ${new_array["$path"]}))
@@ -92,7 +92,7 @@ done <<< "$(sort -k2 -r <<< "$content_new_file")"
 while read -r size path; do
   father_path="$path"
   while true; do
-    [[ ${old_array["${father_path##/*}"]} ]] && break
+    #[[ ${old_array["${father_path##/*}"]} ]] && break
     [[ "${father_path%/*}" = "${father_path##/*}" ]] && break
     father_path="${father_path%/*}"
     old_array["$father_path"]=$((${old_array["$father_path"]} - ${old_array["$path"]}))
