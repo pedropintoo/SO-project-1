@@ -2,3 +2,6 @@
 
 # Nota: 18
 
+Pedro Pinto (115304)
+
+Jorge Domingues (113278)
